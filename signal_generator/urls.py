@@ -13,9 +13,22 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import datetime
+
+from background_task import background
+from background_task.models import CompletedTask, Task
 from django.contrib import admin
 from django.urls import path
+
+from signals.run import run
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
+
+try:
+    CompletedTask.objects.all().delete()
+    Task.objects.all().delete()
+    run(0)
+except:
+    print("exception")
